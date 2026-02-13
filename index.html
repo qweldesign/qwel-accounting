@@ -3,13 +3,202 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Starter Template</title>
-    <link rel="stylesheet" href="./style.css">
-    <link rel="icon" href="./favicon.ico">
+    <title>QWEL Accounting</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&family=Noto+Sans:wght@100..900&family=Noto+Serif:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+    #drop-zone {
+      margin: 48px;
+      padding: 48px;
+      border-radius: 24px;
+      background-color: #d8d8d8;
+      color: #fff;
+      text-align: center;
+    }
+    </style>
   </head>
   <body>
-    
-
-
+    <div id="app">
+      <header class="header">
+        <div id="logo"><img src="assets/logo_animation.svg" alt="QWEL in Action"></div>
+        <h1 id="title">QWEL Accounting | Created by <span> ― QWEL.DESIGN</span></h1>
+        <nav class="nav">
+          <button class="nav__item" :class="{ 'is-current': currentPage === 'monthly' }" @click="changepage('monthly')">月次レポート</button>
+          <button class="nav__item" :class="{ 'is-current': currentPage === 'yearly' }" @click="changepage('yearly')">年次レポート</button>
+          <button class="nav__item" :class="{ 'is-current': currentPage === 'account' }" @click="changepage('account')">資産集計</button>
+          <button class="nav__item" :class="{ 'is-current': currentPage === 'subject' }" @click="changepage('subject')">科目集計</button>
+          <button class="nav__item" :class="{ 'is-current': currentPage === 'import-csv' }" @click="changepage('import-csv')">CSVインポート</button>
+        </nav>
+      </header>
+      <main class="main">
+        <div v-if="currentPage === 'account'">
+          <div class="month-nav">
+            <button class="month-nav__prev" @click="prevMonth">◀<span>prev</span></button>
+            <span class="month-nav__label" v-text="currentMonthLabel"></span>
+            <button class="month-nav__next" @click="nextMonth"><span>next</span>▶</button>
+          </div>
+          <div class="summary">
+            <div class="summary__item" v-for="item in summary">
+              <span class="summary__label" v-text="item.account"></span>
+              <span class="summary__amount" v-text="item.cumulative_amount.toLocaleString()"></span>
+            </div>
+            <div class="summary__item" v-if="summary.length === 0">
+              <span class="summary__label">未累計</span>
+            </div>
+          </div>
+          <table class="table is-account">
+            <thead>
+              <tr>
+                <th>日付</th>
+                <th>科目</th>
+                <th>相手科目</th>
+                <th>金額</th>
+                <th>メモ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in rows">
+                <td v-text="row.date"></td>
+                <td v-text="row.account"></td>
+                <td v-text="row.counterpart"></td>
+                <td><span class="is-amount" v-text="row.amount.toLocaleString()"></span></td>
+                <td v-text="row.note"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div v-if="currentPage === 'subject'">
+          <div class="summary is-subject">
+            <select class="summary__select" v-model="currentAccount" @change="fetchSubjects">
+              <option v-for="subject in subjects" :value="subject.subject_id">{{ subject.subject }}</option>
+            </select>
+            <span class="summary__amount is-subject" v-for="item in summary" v-text="item.year + '年: ' + item.cumulative_amount.toLocaleString()"></span>
+          </div>
+          <table class="table is-subject">
+            <thead>
+              <tr>
+                <th>日付</th>
+                <th>科目</th>
+                <th>相手科目</th>
+                <th>金額</th>
+                <th>メモ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in rows">
+                <td v-text="row.date"></td>
+                <td v-text="row.original_account"></td>
+                <td v-text="row.counterpart"></td>
+                <td><span class="is-amount" v-text="row.amount.toLocaleString()"></span></td>
+                <td v-text="row.note"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div v-if="currentPage === 'monthly'">
+          <div class="month-nav">
+            <button class="month-nav__prev" @click="prevMonth">◀<span>prev</span></button>
+            <span class="month-nav__label" v-text="currentMonthLabel"></span>
+            <button class="month-nav__next" @click="nextMonth"><span>next</span>▶</button>
+          </div>
+          <div class="summary" v-for="item in summary">
+            <div class="summary__item">
+              <span class="summary__label">収入: </span>
+              <span class="summary__amount" v-text="item.income.toLocaleString()"></span>
+            </div>
+            <div class="summary__item">
+              <span class="summary__label">支出: </span>
+              <span class="summary__amount" v-text="item.expense.toLocaleString()"></span>
+            </div>
+            <div class="summary__item">
+              <span class="summary__label">収支: </span>
+              <span class="summary__amount" v-text="item.balance.toLocaleString()"></span>
+            </div>
+          </div>
+          <div class="summary" v-if="summary.length === 0">
+            <div class="summary__item">
+              <span class="summary__label">未累計</span>
+            </div>
+          </div>
+          <table class="table is-monthly">
+            <thead>
+              <tr>
+                <th>科目</th>
+                <th v-for="label in labels" v-text="label"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in rows">
+                <td v-text="row.subject"></td>
+                <td v-for="amount in row.amounts"><span class="is-amount" v-text="amount.toLocaleString()"></span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div v-if="currentPage === 'yearly'">
+          <div class="month-nav">
+            <button class="month-nav__prev" @click="prevYear">◀<span>prev</span></button>
+            <span class="month-nav__label" v-text="currentYear"></span>
+            <button class="month-nav__next" @click="nextYear"><span>next</span>▶</button>
+          </div>
+          <div class="summary" v-for="item in summary">
+            <div class="summary__item">
+              <span class="summary__label">収入: </span>
+              <span class="summary__amount" v-text="item.income.toLocaleString()"></span>
+            </div>
+            <div class="summary__item">
+              <span class="summary__label">支出: </span>
+              <span class="summary__amount" v-text="item.expense.toLocaleString()"></span>
+            </div>
+            <div class="summary__item">
+              <span class="summary__label">収支: </span>
+              <span class="summary__amount" v-text="item.balance.toLocaleString()"></span>
+            </div>
+          </div>
+          <div class="summary" v-if="summary.length === 0">
+            <div class="summary__item">
+              <span class="summary__label">未累計</span>
+            </div>
+          </div>
+          <table class="table is-yearly">
+            <thead>
+              <tr>
+                <th>科目</th>
+                <th v-for="label in labels" v-text="label"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in rows">
+                <td v-text="row.subject"></td>
+                <td v-for="amount in row.amounts"><span class="is-amount" v-text="amount.toLocaleString()"></span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div v-show="currentPage === 'import-csv'">
+          <div id="drop-zone" v-text="`${inputMonth}.csvをここにドロップ`" @dragover.prevent @drop.prevent="handleDrop"></div>
+        </div>
+      </main>
+      <footer id="footer" class="footer">
+        <div class="footer__inner">
+          <a class="footer__item is-github" href="https://github.com/qweldesign" target="_blank" rel="noopener">
+            <svg class="icon is-si-github is-md" width="36" height="36" aria-hidden="true">
+              <use href="assets/icons.svg#si-github"></use>
+            </svg>
+            <span>GitHub</span>
+          </a>
+          <a class="footer__item is-contact" href="https://qwel.design/tools/contact-form/" target="_blank" rel="noopener">
+            <svg class="icon is-si-mail is-md" width="36" height="36" aria-hidden="true">
+              <use href="assets/icons.svg#si-mail"></use>
+            </svg>
+            <span>Contact Me</span>
+          </a>
+          <small class="footer__copyright"></small>
+        </div>
+      </footer>
+    </div>
+    <script src="init.js" type="module"></script>
   </body>
 </html>

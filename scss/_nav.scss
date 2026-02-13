@@ -1,0 +1,18 @@
+/**
+ * Nav
+ */
+
+.nav {
+  @include row(center, center);
+  gap: space("medium");
+  width: 100%;
+
+  &__item {
+    @include button("primary", 9rem, 2.25rem);
+    margin: 0;
+
+    &.is-current {
+      @include make-button-color("secondary");
+    }
+  }
+}

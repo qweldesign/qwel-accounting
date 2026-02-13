@@ -18,8 +18,9 @@
   }
 
   th, td {
-    padding: space();
+    padding: space("x-small");
     border: 0; // Reset
+    @include small-text();
   }
 }
 

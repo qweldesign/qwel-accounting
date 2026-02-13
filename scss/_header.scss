@@ -1,0 +1,35 @@
+/**
+ * Header
+ */
+
+.header {
+  position: sticky;
+  top: 0;
+  @include row(center);
+  gap: space("medium");
+  width: min(100%, 1024px);
+  margin: 0 auto;
+  padding: 0 clamp(0.75rem, 2%, 1.5rem) space("medium");
+  background-color: theme-color("lightest");
+}
+
+#logo {
+  width: 6rem;
+}
+
+#title {
+  color: theme-color("light");
+  font-size: 1.2rem;
+  letter-spacing: 0.05rem;
+
+  &::after {
+    content: "✶";
+    color: theme-color("secondary");
+    font-size: 1.25em;
+    margin-inline-start: space("x-small");
+  }
+
+  & > span {
+    font-family: "Cormorant Garamond", serif;
+  }
+}

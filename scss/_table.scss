@@ -1,0 +1,93 @@
+/**
+ * Table
+ */
+
+.table {
+  @include table();
+  margin-block: space("medium");
+
+  thead > tr {
+    background-color: color-activate("primary")
+  }
+
+  tbody > tr {
+    &:hover {
+      background-color: rgba(color-activate("primary"), 0.075);
+    }
+
+    &:nth-child(even) {
+      background-color: rgba(color-activate("primary"), 0.15);
+
+      &:hover {
+        background-color: rgba(color-activate("primary"), 0.3);
+      }
+    }
+  }
+
+  .is-amount {
+    display: inline-block;
+    width: 100%;
+    padding-inline-end: space("small");
+    text-align: right;
+  }
+
+  &.is-account, &.is-subject {
+    th, td {
+      &:nth-child(1) {
+        width: 7.5rem;
+      }
+      
+      &:nth-child(2) {
+        width: 9rem;
+      }
+      
+      &:nth-child(3) {
+        width: 9rem;
+      }
+      
+      &:nth-child(4) {
+        width: 4.5rem;
+      }
+    }
+  }
+
+  &.is-subject, &.is-yearly {
+    thead > tr {
+      background-color: color-activate("secondary")
+    }
+
+    tbody > tr {
+      &:hover {
+        background-color: rgba(color-activate("secondary"), 0.075);
+      }
+
+      &:nth-child(even) {
+        background-color: rgba(color-activate("secondary"), 0.15);
+
+        &:hover {
+          background-color: rgba(color-activate("secondary"), 0.3);
+        }
+      }
+    }
+  }
+
+  &.is-monthly {
+    th, td {
+      width: 6.3rem;
+
+      &:first-child {
+        width: auto;
+      }
+    }
+  }
+
+  &.is-yearly {
+    th, td {
+      width: 8.4rem;
+
+      &:first-child {
+        width: auto;
+      }
+    }
+  }
+}

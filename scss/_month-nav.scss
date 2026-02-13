@@ -1,0 +1,25 @@
+/**
+ * Month Nav
+ */
+.month-nav {
+  @include row(space-between, center);
+
+  &__prev, &__next {
+    @include button("dark", 6rem, 2rem);
+    margin: 0;
+    font-size: 0.875em;
+    line-height: 1;
+
+    span {
+      padding-inline: space("small");
+      font-style: italic;
+    }
+  }
+
+  &__label {
+    color: theme-color("dark");
+    font-weight: bold;
+    font-style: italic;
+    font-size: 1.25rem;
+  }
+}

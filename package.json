@@ -1,0 +1,35 @@
+{
+  "name": "qwelaccounting",
+  "version": "1.0.0",
+  "description": "SQLite + Electron による簡易会計システム",
+  "main": "modules/main.js",
+  "type": "module",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "build": {
+    "appId": "qwel.accounting",
+    "productName": "QWEL Accounting",
+    "files": [
+      "**/*"
+    ],
+    "win": {
+      "target": "portable",
+      "icon": "logo.png"
+    }
+  },
+  "author": "QWEL.DESIGN",
+  "license": "MIT",
+  "dependencies": {
+    "better-sqlite3": "^12.6.2",
+    "csv-parse": "^6.1.0"
+  },
+  "devDependencies": {
+    "@types/electron": "^1.4.38",
+    "@types/node": "^25.2.3",
+    "electron": "^40.2.1",
+    "electron-builder": "^26.7.0",
+    "typescript": "^5.9.3"
+  }
+}

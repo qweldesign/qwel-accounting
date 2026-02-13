@@ -1,0 +1,124 @@
+/**
+ * Component - Icon
+ */
+
+$icon-bg:          theme-color($theme-accent) !default;
+$icon-color:       color-yiq($theme-accent) !default;
+$icon-hover-bg:    color-active($theme-accent) !default;
+$icon-hover-color: color-yiq($theme-accent, true) !default;
+$icon-size-sm:     1.5rem !default;
+$icon-size-md:     2.25rem !default;
+$icon-size-lg:     3rem !default;
+
+@mixin use-icon($bg: $icon-bg, $color: $icon-color, $hover-bg: $icon-hover-bg, $hover-color: $icon-hover-color, $rounded: 50%) {
+  & > .icon {
+    border-radius: $rounded;
+    background-color: $bg;
+    transition: background-color 0.25s ease;
+
+    & > .icon__span {
+      &, &::before, &::after {
+        border-color: $color;
+      }
+    }
+  }
+
+  &:hover > .icon {
+    background-color: $hover-bg;
+
+    & > .icon__span {
+      &, &::before, &::after {
+        border-color: $hover-color;
+      }
+    }
+  }
+}
+
+.icon {
+  position: relative;
+  display: inline-block;
+  width: $icon-size-sm;
+  height: $icon-size-sm;
+  overflow: hidden;
+  fill: currentColor;
+
+  &.is-md {
+    width: $icon-size-md;
+    height: $icon-size-md;
+  }
+
+  &.is-lg {
+    width: $icon-size-lg;
+    height: $icon-size-lg;
+  }
+
+  &__span {
+    position: relative;
+    display: block;
+    border-width: 0;
+    border-style: solid;
+    border-color: theme-color("lightest");
+    transition: border-color 0.25s ease;
+
+    .icon.is-menu & {
+      width: 60%;
+      height: 20%;
+      margin: 40% 20%;
+      border-block-start-width: 2px;
+      border-block-end-width: 2px;
+    }
+
+    .icon.is-close & {
+      &::before, &::after {
+        content: "";
+        position: absolute;
+        display: block;
+        width: 60%;
+        height: 4%;
+        margin: 48% 20%;
+        border: 1px solid theme-color("lightest");
+        transform: rotate(-45deg);
+      }
+
+      &::after {
+        transform: rotate(45deg);
+      }
+    }
+
+    .icon.is-chevron-up & {
+      width: 30%;
+      height: 30%;
+      margin: 35%;
+      border-block-start-width: 2px;
+      border-inline-start-width: 2px;
+      transform: rotate(45deg) translate(10%, 10%);
+    }
+
+    .icon.is-chevron-down & {
+      width: 30%;
+      height: 30%;
+      margin: 35%;
+      border-inline-end-width: 2px;
+      border-block-end-width: 2px;
+      transform: rotate(45deg) translate(-10%, -10%);
+    }
+
+    .icon.is-chevron-left & {
+      width: 30%;
+      height: 30%;
+      margin: 35%;
+      border-inline-start-width: 2px;
+      border-block-end-width: 2px;
+      transform: rotate(45deg) translate(10%, -10%);
+    }
+
+    .icon.is-chevron-right & {
+      width: 30%;
+      height: 30%;
+      margin: 35%;
+      border-block-start-width: 2px;
+      border-inline-end-width: 2px;
+      transform: rotate(45deg) translate(-10%, 10%);
+    }
+  }
+}

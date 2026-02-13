@@ -26,8 +26,18 @@
 @import "root";
 @import "normalize";
 
+// Components
+@import "icon";
+
 // Projects
-@import "section";
+@import "header";
+@import "nav";
+@import "main";
+@import "month-nav";
+@import "summary";
+@import "table";
+@import "footer";
+@import "backToTop";
 
 // Utility
 //@import "utilities/flex";
